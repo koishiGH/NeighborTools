@@ -95,6 +95,8 @@ void** GWorldPtr = nullptr;
 
 enum class GameVersion { UNKNOWN, FULL_GAME, ALPHA_4, BETA_1 };
 
+static GameVersion currentGameVersion = GameVersion::UNKNOWN;
+
 GameVersion DetectGameVersion() {
 	char processName[MAX_PATH];
 	GetModuleFileNameA(NULL, processName, MAX_PATH);
@@ -189,6 +191,7 @@ bool InitializeSDK(GameVersion version) {
 }
 
 void HandleGameVersion(GameVersion version) {
+	currentGameVersion = version;
 	switch (version) {
 	case GameVersion::FULL_GAME:
 		if (InitializeSDK(version)) std::cout << "Full Game SDK initialized" << std::endl;
@@ -417,7 +420,22 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 		float availableHeight = ImGui::GetContentRegionAvail().y;
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + availableHeight - ImGui::GetTextLineHeight());
 		ImVec4 textColor = ImVec4(0.5f, 0.5f, 0.5f, 1.0f);
-		ImGui::TextColored(textColor, "Menu toggle keybind: HOME");
+		const char* gameVersionStr = "UNKNOWN VERSION";
+		switch (currentGameVersion) {
+			case GameVersion::FULL_GAME:
+				gameVersionStr = "FULL GAME";
+				break;
+			case GameVersion::BETA_1:
+				gameVersionStr = "BETA 1";
+				break;
+			case GameVersion::ALPHA_4:
+				gameVersionStr = "ALPHA 4";
+				break;
+			default:
+				gameVersionStr = "UNKNOWN VERSION";
+				break;
+		}
+		ImGui::TextColored(textColor, "Menu toggle keybind: HOME | CURRENT GAME: Hello Neighbor - %s", gameVersionStr);
 
 		if (enableEffect) {
 			updatePoints(points, width, height);
