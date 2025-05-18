@@ -6,5 +6,4 @@
 # creds
 
 * maybekoi (me!) - NeighborTools
-* Mrisu - imgui Menu Base
 * TinyBuild - Hello Neighbor
